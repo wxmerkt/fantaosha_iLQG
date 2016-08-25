@@ -11,7 +11,7 @@
 #include <iostream>
 
 #include <Eigen/Dense>
-#include <snoptProblem.hpp>
+#include <snoptProblem.hh>
 
 template<size_t N> class snOPT
 {
