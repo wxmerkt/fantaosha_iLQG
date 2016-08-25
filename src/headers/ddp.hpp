@@ -12,6 +12,7 @@
 #include <type.hpp>
 #include <boxQP.hpp>
 
+#define PRINT
 
 template<typename Robot> class DDP
 {
@@ -188,9 +189,11 @@ template<typename Robot> void DDP<Robot>::iterate(int const & itr_max, std::vect
 
 	for(int i=0;i<itr_max;i++)
 	{
-//		std::cout<<"========================================================================"<<std::endl;
-//		std::cout<<"Iteration # "<<i<<std::endl;
-//		std::cout<<"------------------------------------------------------------------------"<<std::endl;
+#ifdef PRINT
+		std::cout<<"========================================================================"<<std::endl;
+		std::cout<<"Iteration # "<<i<<std::endl;
+		std::cout<<"------------------------------------------------------------------------"<<std::endl;
+#endif
 		// backward pass
 		bool backPassDone=false;
 		while(!backPassDone)
@@ -218,7 +221,7 @@ template<typename Robot> void DDP<Robot>::iterate(int const & itr_max, std::vect
 			dlambda=std::min(dlambda/params.lambdaFactor, 1.0/params.lambdaFactor);
 			lambda=lambda*dlambda*(lambda>params.lambdaMin);
 #ifdef PRINT
-			std::cout<<"SUCCESS: gradient norm = "<<gnorm" < tolGrad"<<std::endl
+			std::cout<<"SUCCESS: gradient norm = "<<gnorm<<" < tolGrad"<<std::endl;
 #endif
 
 			break;
@@ -261,21 +264,26 @@ template<typename Robot> void DDP<Robot>::iterate(int const & itr_max, std::vect
 			}
 		}
 
-//		std::cout<<"--------------------------------------------"<<std::endl;
-//		std::cout<<"Results"<<std::endl;
-//		std::cout<<"--------------------------------------------"<<std::endl;
+#ifdef PRINT
+		std::cout<<"--------------------------------------------"<<std::endl;
+		std::cout<<"Results"<<std::endl;
+		std::cout<<"--------------------------------------------"<<std::endl;
+#endif
+
 		if(fwdPassDone)
 		{
 			dlambda=std::min(dlambda/params.lambdaFactor, 1.0/params.lambdaFactor);
 			lambda=lambda*dlambda*(lambda>params.lambdaMin);
+
+#ifdef PRINT			
+			std::cout<<"Improved"<<std::endl;
+			std::cout<<"lambda: "<<lambda<<std::endl;
+			std::cout<<"dlambda: "<<dlambda<<std::endl;
+			std::cout<<"Jn: "<<Jn<<std::endl;
 			
-//			std::cout<<"Improved"<<std::endl;
-//			std::cout<<"lambda: "<<lambda<<std::endl;
-//			std::cout<<"dlambda: "<<dlambda<<std::endl;
-//			std::cout<<"Jn: "<<Jn<<std::endl;
-			
-//			std::cout<<"Jn: "<<Jn<<std::endl;
-//			std::cout<<Robot::State::diff(xns[num],xrefs[num]).transpose()<<std::endl;
+			std::cout<<"Jn: "<<Jn<<std::endl;
+			std::cout<<Robot::State::diff(xns[num],xrefs[num]).transpose()<<std::endl;
+#endif
 			xs=xns;
 			us=uns;
 			J0=Jn;
@@ -293,15 +301,19 @@ template<typename Robot> void DDP<Robot>::iterate(int const & itr_max, std::vect
 			dlambda=std::max(dlambda*params.lambdaFactor, params.lambdaFactor);
 			lambda=std::max(lambda*dlambda, params.lambdaMin);
 
-//			std::cout<<"No step found"<<std::endl;
-//			std::cout<<"lambda: "<<lambda<<std::endl;
-//			std::cout<<"dlambda: "<<dlambda<<std::endl;
-//			std::cout<<"Jn: "<<Jn<<std::endl;
+#ifdef PRINT
+			std::cout<<"No step found"<<std::endl;
+			std::cout<<"lambda: "<<lambda<<std::endl;
+			std::cout<<"dlambda: "<<dlambda<<std::endl;
+			std::cout<<"Jn: "<<Jn<<std::endl;
+#endif
 			
 			if (lambda>params.lambdaMax)
 				break;
 		}
-//		std::cout<<"========================================================================"<<std::endl<<std::endl;
+#ifdef PRINT
+		std::cout<<"========================================================================"<<std::endl<<std::endl;
+#endif
 	}
 
 	if(us0.capacity()<num)
