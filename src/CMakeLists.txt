@@ -11,8 +11,11 @@ else()
         message(STATUS "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
 endif()
 
+find_package(PkgConfig)
+pkg_check_modules(SNOPT REQUIRED snopt_cpp)
+
 find_package(Eigen3 REQUIRED)
-find_package(SNOPT REQUIRED)
+#find_package(SNOPT REQUIRED)
 find_package(Matlab REQUIRED)
 find_package(OpenMP REQUIRED)
 
@@ -24,8 +27,8 @@ if (OPENMP_FOUND)
 endif()
 
 include_directories(${EIGEN3_INCLUDE_DIR})
-include_directories(${MATLAB_INCLUDE_DIR})
-include_directories(${SNOPT_DIRS})
+include_directories(${Matlab_INCLUDE_DIRS})
+include_directories(${SNOPT_INCLUDE_DIRS})
 
 include_directories(headers)
 
@@ -41,21 +44,24 @@ endif()
 message(${CMAKE_CXX_FLAGS})
 
 #add_executable(test2 test2.cpp)
-#target_link_libraries(test2 ${SNOPT_LIBRARIES} ${MATLAB_LIBRARIES})
+#target_link_libraries(test2 ${SNOPT_LIBRARIES} ${Matlab_LIBRARIES})
 
 #add_executable(quadrotor_ddp_est quadrotor_ddp_est.cpp)
-#target_link_libraries(quadrotor_ddp_est ${SNOPT_LIBRARIES} ${MATLAB_LIBRARIES})
+#target_link_libraries(quadrotor_ddp_est ${SNOPT_LIBRARIES} ${Matlab_LIBRARIES})
 
-add_executable(quadrotor_ddp quadrotor_ddp.cpp)
-target_link_libraries(quadrotor_ddp ${SNOPT_LIBRARIES} ${MATLAB_LIBRARIES})
+#add_executable(quadrotor_ddp quadrotor_ddp.cpp)
+#target_link_libraries(quadrotor_ddp ${SNOPT_LIBRARIES} ${Matlab_LIBRARIES})
 
-add_executable(quadrotor_ilqg quadrotor_ilqg.cpp)
-target_link_libraries(quadrotor_ilqg ${SNOPT_LIBRARIES} ${MATLAB_LIBRARIES})
+#add_executable(quadrotor_ilqg quadrotor_ilqg.cpp)
+#target_link_libraries(quadrotor_ilqg ${SNOPT_LIBRARIES} ${Matlab_LIBRARIES})
 #add_executable(quadrotor_lqr quadrotor_lqr.cpp)
-#target_link_libraries(quadrotor_lqr ${SNOPT_LIBRARIES} ${MATLAB_LIBRARIES})
+#target_link_libraries(quadrotor_lqr ${SNOPT_LIBRARIES} ${Matlab_LIBRARIES})
 
-#add_executable(car_ddp car_ddp.cpp)
-#target_link_libraries(car_ddp)
+add_executable(car_ddp car_ddp.cpp)
+target_link_libraries(car_ddp)
+
+add_executable(car car.cpp)
+target_link_libraries(car)
 
 #add_executable(test test.cpp)
-#target_link_libraries(test ${SNOPT_LIBRARIES} ${MATLAB_LIBRARIES})
+#target_link_libraries(test ${SNOPT_LIBRARIES} ${Matlab_LIBRARIES})
