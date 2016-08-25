@@ -20,8 +20,8 @@ int main()
 	car::State state0(x0);
 	car::State state_ref(Vec5::Zero());
 
-	std::list<car::U> list_u0(2000,Vec2::Zero());
-	std::list<car::State> list_ref(2000, state_ref);
+	std::vector<car::U> list_u0(2000,Vec2::Zero());
+	std::vector<car::State> list_ref(2000, state_ref);
 
 	Mat5 M=(Vec5()<<5,5,1,1,1).finished().asDiagonal();
 	Mat5 Mf=M;
@@ -33,7 +33,7 @@ int main()
 	Vec2 umax=Vec2::Ones()*2;
 	
 	iLQG<car> ilqg(sys,dt);
-	ilqg.init(state0, list_u0, list_ref, params, umin, umax,N);
-	ilqg.evaluate(-1,10,list_u0);
+	ilqg.init(state0, list_u0, list_ref, params, umin, umax, N);
+	ilqg.iterate(50, list_u0);
 	return 0;
 }
