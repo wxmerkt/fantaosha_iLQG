@@ -192,9 +192,11 @@ template<typename Robot> void iLQG<Robot>::iterate(int const & itr_max, std::vec
 
 	for(int i=0;i<itr_max;i++)
 	{
-//		std::cout<<"========================================================================"<<std::endl;
-//		std::cout<<"Iteration # "<<i<<std::endl;
-//		std::cout<<"------------------------------------------------------------------------"<<std::endl;
+#ifdef PRINT
+		std::cout<<"========================================================================"<<std::endl;
+		std::cout<<"Iteration # "<<i<<std::endl;
+		std::cout<<"------------------------------------------------------------------------"<<std::endl;
+#endif
 		// backward pass
 		bool backPassDone=false;
 		while(!backPassDone)
@@ -222,7 +224,7 @@ template<typename Robot> void iLQG<Robot>::iterate(int const & itr_max, std::vec
 			dlambda=std::min(dlambda/params.lambdaFactor, 1.0/params.lambdaFactor);
 			lambda=lambda*dlambda*(lambda>params.lambdaMin);
 #ifdef PRINT
-			std::cout<<"SUCCESS: gradient norm = "<<gnorm" < tolGrad"<<std::endl
+			std::cout<<"SUCCESS: gradient norm = "<<gnorm<<" < tolGrad"<<std::endl;
 #endif
 
 			break;
@@ -265,21 +267,26 @@ template<typename Robot> void iLQG<Robot>::iterate(int const & itr_max, std::vec
 			}
 		}
 
-//		std::cout<<"--------------------------------------------"<<std::endl;
-//		std::cout<<"Results"<<std::endl;
-//		std::cout<<"--------------------------------------------"<<std::endl;
+#ifdef PRINT
+		std::cout<<"--------------------------------------------"<<std::endl;
+		std::cout<<"Results"<<std::endl;
+		std::cout<<"--------------------------------------------"<<std::endl;
+#endif
+
 		if(fwdPassDone)
 		{
 			dlambda=std::min(dlambda/params.lambdaFactor, 1.0/params.lambdaFactor);
 			lambda=lambda*dlambda*(lambda>params.lambdaMin);
 			
-//			std::cout<<"Improved"<<std::endl;
-//			std::cout<<"lambda: "<<lambda<<std::endl;
-//			std::cout<<"dlambda: "<<dlambda<<std::endl;
-//			std::cout<<"Jn: "<<Jn<<std::endl;
+#ifdef PRINT
+			std::cout<<"Improved"<<std::endl;
+			std::cout<<"lambda: "<<lambda<<std::endl;
+			std::cout<<"dlambda: "<<dlambda<<std::endl;
+			std::cout<<"Jn: "<<Jn<<std::endl;
 			
-//			std::cout<<"Jn: "<<Jn<<std::endl;
-//			std::cout<<Robot::State::diff(xns[num],xrefs[num]).transpose()<<std::endl;
+			std::cout<<"Jn: "<<Jn<<std::endl;
+			std::cout<<Robot::State::diff(xns[num],xrefs[num]).transpose()<<std::endl;
+#endif
 			xs=xns;
 			us=uns;
 			J0=Jn;
@@ -469,11 +476,13 @@ template<typename Robot> int iLQG<Robot>::backwards(std::vector<MatNM> & Ks, std
 		Ks[i]=K;
 	}
 
-//	std::cout<<"--------------------------------------------"<<std::endl;
-//	std::cout<<"Backwards"<<std::endl;
-//	std::cout<<"--------------------------------------------"<<std::endl;
-//	for(int i=0;i<num;i++)
-//		std::cout<<"ku["<<i+1<<"]: "<<kus[i].transpose()<<std::endl;
+#ifdef PRINT
+	std::cout<<"--------------------------------------------"<<std::endl;
+	std::cout<<"Backwards"<<std::endl;
+	std::cout<<"--------------------------------------------"<<std::endl;
+	for(int i=0;i<num;i++)
+		std::cout<<"ku["<<i+1<<"]: "<<kus[i].transpose()<<std::endl;
+#endif
 
 	return -1;
 }
