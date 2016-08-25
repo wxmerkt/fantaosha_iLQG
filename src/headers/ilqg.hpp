@@ -11,8 +11,13 @@
 #include <algorithm>
 #include <type.hpp>
 #include <boxQP.hpp>
-#include <snOPT.hpp>
+// #include <snOPT.hpp>
 
+#undef abs
+#undef min
+#undef max
+
+    #define PRINT
 
 template<typename Robot> class iLQG 
 {
@@ -90,7 +95,7 @@ protected:
 		Vec2 dJ;
 
 		bool isbounded(VecN &x, Eigen::Matrix<int,N,1> & free, VecN const & xmin, VecN const & xmax);
-		int snopt(MatNN const & Quu, VecN const & Qu, VecN const & dumin, VecN const & dumax, VecN & ku, Eigen::Matrix<int,N,1>  & free);	
+		// int snopt(MatNN const & Quu, VecN const & Qu, VecN const & dumin, VecN const & dumax, VecN & ku, Eigen::Matrix<int,N,1>  & free);	
 		double getGnorm(std::vector<VecN> const & kus, std::vector<VecN> const & us);
 	public:               
 		iLQG(System const & sys, double const & dt);
@@ -116,7 +121,7 @@ template <typename Robot> double iLQG<Robot>::getGnorm(std::vector<VecN> const &
 
 template <typename Robot> iLQG<Robot>::iLQG(System const & sys_, double const & dt_):sys(sys_), dt(dt_), num(0)
 {
-	snOPT<Robot::N>::init();
+	// snOPT<Robot::N>::init();
 }
 
 template <typename Robot> bool iLQG<Robot>::init(State const & x0_, std::vector<U> const & us_, std::vector<Ref> const & xrefs_, Params const & params_, U const & umin_, U const & umax_, int const & num_)
@@ -435,12 +440,12 @@ template<typename Robot> int iLQG<Robot>::backwards(std::vector<MatNM> & Ks, std
 		U dumax=umax-us[i];
 
 		VecN ku=-llt.solve(Qu);
-		Eigen::Matrix<int,N,1> free;
+		// Eigen::Matrix<int,N,1> free; // double declaration, deactivated for boxQP (wxm)
 		
-		if(isbounded(ku,free,dumin,dumax));
-			result=snopt(Quum,Qu,dumin,dumax,ku,free);
+		// if(isbounded(ku,free,dumin,dumax));
+		// 	result=snopt(Quum,Qu,dumin,dumax,ku,free);
 
-//		boxQP<N>(Quum, Qu, dumin, dumax, kus[std::min(i+1,num-1)], ku, Hfree, free, result);
+		boxQP<N>(Quum, Qu, dumin, dumax, kus[std::min(i+1,num-1)], ku, Hfree, free, result);
 
 		if(result>=2)
 			return i;
@@ -486,7 +491,7 @@ template<typename Robot> int iLQG<Robot>::backwards(std::vector<MatNM> & Ks, std
 
 	return -1;
 }
-template<typename Robot> int iLQG<Robot>::snopt(MatNN const & Quu, VecN const & Qu, VecN const & dumin, VecN const & dumax, VecN & ku, Eigen::Matrix<int,N,1>  & free)
+/*template<typename Robot> int iLQG<Robot>::snopt(MatNN const & Quu, VecN const & Qu, VecN const & dumin, VecN const & dumax, VecN & ku, Eigen::Matrix<int,N,1>  & free)
 {
 	typename snOPT<N>::Params options;
 	options.xlow=dumin;
@@ -514,7 +519,7 @@ template<typename Robot> int iLQG<Robot>::snopt(MatNN const & Quu, VecN const & 
 	ku=x;
 
 	return result;
-}
+}*/
 
 template<typename Robot> bool iLQG<Robot>::isbounded(VecN &x, Eigen::Matrix<int,N,1> & xstate, VecN const & xmin, VecN const & xmax)
 {
