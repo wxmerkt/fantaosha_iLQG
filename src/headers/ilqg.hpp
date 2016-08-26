@@ -18,6 +18,7 @@
 #undef max
 
 #define PRINT
+#define DEBUG_VERBOSE
 
 template <typename Robot>
 class iLQG {
@@ -184,6 +185,7 @@ bool iLQG<Robot>::init(State const &x0_, std::vector<U> const &us_,
 
   for (int i = 0; i < num; i++) {
     error = Robot::State::diff(xs[i], xrefs[i]);
+
     J0 += Robot::L(params.Q, params.R, error, us[i]) * dt;
 
     DState dstate(sys, xs[i], us[i]);
@@ -193,9 +195,11 @@ bool iLQG<Robot>::init(State const &x0_, std::vector<U> const &us_,
   error = Robot::State::diff(xs[num], xrefs[num]);
   J0 += Robot::L(params.Qf, MatNN::Zero(), error, VecN::Zero());
 
-  //	std::cout<<"=========================================="<<std::endl;
-  //	std::cout<<"J0: "<<J0<<std::endl;
-  //	std::cout<<"=========================================="<<std::endl;
+#ifdef DEBUG_VERBOSE
+  std::cout << "==========================================" << std::endl;
+  std::cout << "J0: " << J0 << std::endl;
+  std::cout << "==========================================" << std::endl;
+#endif
   return true;
 }
 
@@ -224,6 +228,7 @@ void iLQG<Robot>::iterate(int const &itr_max, std::vector<U> &us0) {
     bool backPassDone = false;
     while (!backPassDone) {
       int result = backwards(Ks, kus, lambda);
+      std::cout << "Running backwards, result: " << result << std::endl;
 
       if (result >= 0) {
         dlambda = std::max(dlambda * params.lambdaFactor, params.lambdaFactor);
@@ -265,6 +270,7 @@ void iLQG<Robot>::iterate(int const &itr_max, std::vector<U> &us0) {
     uns.resize(num, VecN::Zero());
 
     if (backPassDone) {
+      std::cout << "BACK DONE" << std::endl;
       double alpha = params.alpha;
 
       while (alpha > params.alphaMin) {
@@ -276,7 +282,7 @@ void iLQG<Robot>::iterate(int const &itr_max, std::vector<U> &us0) {
         if (expected > 0) reductionRatio = actual / expected;
         //				else
         //					std::cout<<"WARNING:
-        //non-positive
+        // non-positive
         // expected reduction: should not occur"<<std::endl;
 
         if (reductionRatio > params.reductionRatioMin) fwdPassDone = true;
@@ -322,14 +328,20 @@ void iLQG<Robot>::iterate(int const &itr_max, std::vector<U> &us0) {
       dlambda = std::max(dlambda * params.lambdaFactor, params.lambdaFactor);
       lambda = std::max(lambda * dlambda, params.lambdaMin);
 
-      //			std::cout<<"No step found"<<std::endl;
-      //			std::cout<<"lambda: "<<lambda<<std::endl;
-      //			std::cout<<"dlambda: "<<dlambda<<std::endl;
-      //			std::cout<<"Jn: "<<Jn<<std::endl;
+#ifdef PRINT
+      std::cout << "No step found" << std::endl;
+      std::cout << "lambda: " << lambda << std::endl;
+      std::cout << "dlambda: " << dlambda << std::endl;
+      std::cout << "Jn: " << Jn << std::endl;
+#endif
 
       if (lambda > params.lambdaMax) break;
     }
-    //		std::cout<<"========================================================================"<<std::endl<<std::endl;
+#ifdef PRINT
+    std::cout << "============================================================="
+                 "===========" << std::endl
+              << std::endl;
+#endif
   }
 
   if (us0.capacity() < num) {
@@ -458,6 +470,8 @@ int iLQG<Robot>::backwards(std::vector<MatNM> &Ks, std::vector<VecN> &kus,
 
     boxQP<N>(Quum, Qu, dumin, dumax, kus[std::min(i + 1, num - 1)], ku, Hfree,
              free, result);
+
+    std::cout << "BoxQP Result " << result << std::endl;
 
     if (result >= 2) return i;
 

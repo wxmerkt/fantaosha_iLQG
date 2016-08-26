@@ -264,8 +264,9 @@ void DDP<Robot>::iterate(int const &itr_max, std::vector<U> &us0) {
 
         if (expected > 0) reductionRatio = actual / expected;
         //				else
-        //					std::cout<<"WARNING: non-positive
-        //expected reduction: should not occur"<<std::endl;
+        //					std::cout<<"WARNING:
+        //non-positive
+        // expected reduction: should not occur"<<std::endl;
 
         if (reductionRatio > params.reductionRatioMin) fwdPassDone = true;
         break;
