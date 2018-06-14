@@ -46,23 +46,25 @@ endif()
 
 message(${CMAKE_CXX_FLAGS})
 
-add_executable(quadrotor_ddp_est quadrotor_ddp_est.cpp)
-target_link_libraries(quadrotor_ddp_est ${SNOPT_LIBRARIES} ${Matlab_LIBRARIES} -lmat -lmx)
+#add_executable(quadrotor_ddp_est quadrotor_ddp_est.cpp)
+#target_link_libraries(quadrotor_ddp_est ${SNOPT_LIBRARIES} ${Matlab_LIBRARIES} -lmat -lmx)
 
-add_executable(quadrotor_ddp quadrotor_ddp.cpp)
-target_link_libraries(quadrotor_ddp ${SNOPT_LIBRARIES} ${Matlab_LIBRARIES} -lmat -lmx)
+#add_executable(quadrotor_ddp quadrotor_ddp.cpp)
+#target_link_libraries(quadrotor_ddp ${SNOPT_LIBRARIES} ${Matlab_LIBRARIES} -lmat -lmx)
 
-add_executable(quadrotor_ilqg quadrotor_ilqg.cpp)
-target_link_libraries(quadrotor_ilqg ${SNOPT_LIBRARIES} ${Matlab_LIBRARIES} -lmat -lmx)
+#add_executable(quadrotor_ilqg quadrotor_ilqg.cpp)
+#target_link_libraries(quadrotor_ilqg ${SNOPT_LIBRARIES} ${Matlab_LIBRARIES} -lmat -lmx)
 
-add_executable(quadrotor_lqr quadrotor_lqr.cpp)
-target_link_libraries(quadrotor_lqr ${SNOPT_LIBRARIES} ${Matlab_LIBRARIES} -lmat -lmx)
+#add_executable(quadrotor_lqr quadrotor_lqr.cpp)
+#target_link_libraries(quadrotor_lqr ${SNOPT_LIBRARIES} ${Matlab_LIBRARIES} -lmat -lmx)
 
-add_executable(car_ddp car_ddp.cpp)
-target_link_libraries(car_ddp ${Matlab_LIBRARIES})
+#add_executable(car_ddp car_ddp.cpp)
+#target_link_libraries(car_ddp ${Matlab_LIBRARIES} -lmat -lmx)
 
 add_executable(car car.cpp)
-target_link_libraries(car ${Matlab_LIBRARIES})
+target_link_libraries(car ${Matlab_LIBRARIES} -lmat -lmx)
+
+add_executable(test_boxQP test_boxQP.cc)
 
 #add_executable(test_a test.cpp)
 #target_link_libraries(test_a ${SNOPT_LIBRARIES} ${Matlab_LIBRARIES})

@@ -11,7 +11,7 @@
 #include <iostream>
 
 #include <Eigen/Dense>
-#include <snoptProblem.hh>
+#include <snoptProblem.hpp>
 
 template <size_t N>
 class snOPT {
@@ -105,8 +105,8 @@ class snOPT {
 
       for (size_t j = 0; j < num; j++) jGvar[j] = j;
 
-      problem.setG(lenG, neG, iGfun, jGvar);
-      problem.setA(lenA, neA, iAfun, jAvar, A);
+      problem.setG(lenG, iGfun, jGvar);
+      problem.setA(lenA, iAfun, jAvar, A);
       problem.setUserFun(usrfunG);
 
       initialized = true;
